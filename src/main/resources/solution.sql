@@ -13,4 +13,4 @@ create table if not exists usuarios(
 	estado varchar(2),
 	data_criacao datetime,
 	data_atualizacao datetime
-)
+);
