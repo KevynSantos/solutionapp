@@ -17,10 +17,12 @@ import org.springframework.http.HttpStatus;
  */
 public interface UserService {
     
-    Pair<HttpStatus,HashMap<String,Object>> addOrUpdate(UserDto dto);
+    Pair<HttpStatus,HashMap<String,Object>> addOrUpdate(UserDto dto,Long id);
     
     List<User> findAll();
 
     public Pair<HttpStatus, HashMap<String, Object>> delete(Long id);
+    
+    Pair<HttpStatus,HashMap<String,Object>> findOne(Long id);
     
 }

@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Pair<HttpStatus,HashMap<String,Object>> addOrUpdate(UserDto dto) {
+    public Pair<HttpStatus,HashMap<String,Object>> addOrUpdate(UserDto dto,Long id) {
         
         HashMap<String,Object> result = new HashMap<>();
         HttpStatus status = HttpStatus.OK;
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         try{
             User model;
             //se nao existir um id, entende-se que é um novo cadastro
-            if(Objects.isNull(dto.getId()))
+            if(Objects.isNull(id))
             {
                 model = new User();
                 putUserData(model,dto,false);
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
                 return Pair.of(status, result);
                 
             }
-            Optional<User> user = this.userDao.findById(dto.getId());
+            Optional<User> user = this.userDao.findById(id);
             
             if(user.isPresent())
             {//se ja existir um usuario com esse id, faça a atualização
@@ -137,5 +137,38 @@ public class UserServiceImpl implements UserService {
         }
         
         return Pair.of(status, result);
+    }
+
+    @Override
+    public Pair<HttpStatus,HashMap<String,Object>> findOne(Long id) {
+        HashMap<String,Object> result = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+       try
+       {
+           Optional<User> user = this.userDao.findById(id);
+           result.put("status", "sucesso");
+           if(user.isPresent())
+           {
+               result.put("user", user.get());
+           }
+           else
+           {
+               result.put("user", null);
+               result.put("mensagem", "Endereço não encontrado");
+           }
+               
+       }
+       catch(Exception e)
+       {
+           LOG.error(e.getMessage());
+           String mensagem = messageSource.getMessage("message.error.generic", null, Locale.getDefault());
+           String body = String.format("%s: %s", mensagem, e.getMessage());
+           result.put("status", "erro");
+           result.put("mensagem", body);
+           status = HttpStatus.BAD_REQUEST;
+       }
+       
+       return Pair.of(status, result);
+        
     }
 }

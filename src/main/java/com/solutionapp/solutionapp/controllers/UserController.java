@@ -32,9 +32,9 @@ public class UserController extends AbstractController {
     }
     
     @PutMapping("/addOrUpdate")
-    public ResponseEntity<?> addOrUpdate(@RequestBody UserDto userDto)
+    public ResponseEntity<?> addOrUpdate(@RequestParam(value="id",required = false) Long id,@RequestBody UserDto userDto)
     {
-        Pair<HttpStatus, HashMap<String, Object>> res = this.userService.addOrUpdate(userDto);
+        Pair<HttpStatus, HashMap<String, Object>> res = this.userService.addOrUpdate(userDto,id);
         
         return convertToJson(res.getSecond(), res.getFirst());
     } 
@@ -45,7 +45,14 @@ public class UserController extends AbstractController {
         Pair<HttpStatus, HashMap<String, Object>> res = this.userService.delete(id);
         
         return convertToJson(res.getSecond(), res.getFirst());
-    } 
+    }
+    
+    @GetMapping("findOne")
+    public ResponseEntity<?> findOne(@RequestParam(value="id") Long id){
+        Pair<HttpStatus, HashMap<String, Object>> res = this.userService.findOne(id);
+        
+        return convertToJson(res.getSecond(), res.getFirst());
+    }
     
     @Autowired
     private UserService userService;
